@@ -52,13 +52,11 @@ Player.prototype.modifyShield = function(delta) {
 };
 
 Player.prototype.modifyEnergy = function(delta) {
-  this.energy = Math.max(0, Math.min(1.0, this.energy + delta));
+  this.energy = this.energy + delta;
   this.statusBar.energyMeter.value = this.energy;
 };
 
 Player.prototype.regenerate = function() {
-  this.modifyEnergy(GameState.frameInterval * GameState.energyRegenerationRate);
-
   if(this.shield < 1.0 && this.energy > GameState.shieldRegenerationEnergyThreshold) {
     let shieldRegenerationAmount = Math.min(GameState.frameInterval * GameState.shieldRegenerationRate, 1.0 - this.shield);
     shieldRegenerationAmount = Math.min(shieldRegenerationAmount, this.energy / GameState.shieldRegenerationEnergyCost);

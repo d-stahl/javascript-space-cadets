@@ -46,33 +46,9 @@ Spaceship.prototype.accelerate = function(acceleration) {
 };
 
 Spaceship.prototype.checkBorderCollision = function() {
-  if(this.x - GameState.shipRadius < GameState.borderMargin) {
-    this.x = GameState.borderMargin + GameState.shipRadius;
-    this.takeDamage(GameState.borderCollisionDamage * Math.abs(this.velocity.x) * Math.abs(this.velocity.x), {x: this.x - GameState.shipRadius, y: this.y});
-    this.velocity.x = this.velocity.x * -1.0 * GameState.borderBounciness;
-  }
-
-  if(this.x + GameState.shipRadius > CanvasManager.canvas.width - GameState.borderMargin) {
-    this.x = CanvasManager.canvas.width - GameState.borderMargin - GameState.shipRadius;
-    this.takeDamage(GameState.borderCollisionDamage * Math.abs(this.velocity.x) * Math.abs(this.velocity.x), {x: this.x + GameState.shipRadius, y: this.y});
-    this.velocity.x = this.velocity.x * -1.0 * GameState.borderBounciness;
-  }
-
-  if(this.y - GameState.shipRadius < GameState.borderMargin) {
-    this.y = GameState.borderMargin + GameState.shipRadius;
-    this.takeDamage(GameState.borderCollisionDamage * Math.abs(this.velocity.y) * Math.abs(this.velocity.y), {x: this.x, y: this.y - GameState.shipRadius});
-    this.velocity.y = this.velocity.y * -1.0 * GameState.borderBounciness;
-  }
-
-  if(this.y + GameState.shipRadius > CanvasManager.canvas.height - GameState.borderMargin) {
-    this.y = CanvasManager.canvas.height - GameState.borderMargin - GameState.shipRadius;
-    this.takeDamage(GameState.borderCollisionDamage * Math.abs(this.velocity.y) * Math.abs(this.velocity.y), {x: this.x, y: this.y + GameState.shipRadius});
-    this.velocity.y = this.velocity.y * -1.0 * GameState.borderBounciness;
-  }
 };
 
 Spaceship.prototype.takeDamage = function(damage, pointOfImpact) {
-  this.emitDamageParticles(Math.floor(damage * GameState.damageToParticlesRatio), pointOfImpact);
   let shieldDamage = Math.min(damage, this.player.shield);
   if(shieldDamage > 0.0) {
     this.player.modifyShield(-shieldDamage);
@@ -84,33 +60,6 @@ Spaceship.prototype.takeDamage = function(damage, pointOfImpact) {
 };
 
 Spaceship.prototype.emitDamageParticles = function(numberOfParticles, origin) {
-  for(let i = 0; i < numberOfParticles; i++) {
-    const speed = Math.random() * 0.15 + 0.1;
-    const angle = Math.random() * Math.PI * 2;
-    const lifeSpan = Math.random() * 1000 + 750;
-    const newParticle = new Particle(
-      {
-        x: origin.x,
-        y: origin.y
-      },
-      {
-        x: Math.cos(angle) * speed,
-        y: Math.sin(angle) * speed
-      },
-      {
-        width: 1.5,
-        height: 1.5,
-      },
-      0.0,
-      0.0,
-      '#5c768c',
-      '#5f5f5f',
-      true,
-      lifeSpan,
-      false,
-      0.0);
-    ParticlesManager.addParticle(newParticle);
-  }
 };
 
 Spaceship.prototype.fireCannons = function() {
@@ -119,6 +68,5 @@ Spaceship.prototype.fireCannons = function() {
     this.cannonParticleEmitters.forEach((emitter) => {
       emitter.emitParticle(this);
     });
-    AudioManager.playRandomAudio(this.player.ship.cannonFiringSounds);
   }
 };
